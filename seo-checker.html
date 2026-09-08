@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Free On-Page SEO Checker | RankPath</title>
+  <meta name="description" content="Check a web page for on-page SEO, technical issues, content signals and AI search readiness. Review critical errors, warnings and passed checks.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="container nav">
+    <a class="brand" href="index.html"><img src="assets/rankpath-logo.png" alt="RankPath"></a>
+    <nav class="nav-links">
+      <a href="index.html#services">Services</a><a class="active" href="seo-checker.html">SEO Checker</a><a href="index.html#how">How It Works</a><a href="index.html#insights">Resources</a><a href="index.html#about">About</a>
+    </nav>
+    <a class="btn btn-primary btn-sm nav-cta" href="index.html#about">Get Free Audit →</a>
+    <button class="menu-btn" aria-label="Open menu">☰</button>
+  </div>
+</header>
+
+<main>
+  <section class="checker-hero">
+    <div class="container">
+      <div class="breadcrumb">Home › SEO Checker</div>
+      <span class="eyebrow">FREE ON-PAGE SEO CHECKER</span>
+      <h1 class="checker-title">See what’s working — and what to fix.</h1>
+      <p class="muted" style="max-width:760px;font-size:17px">Enter one public page URL and an optional target keyword. Your report can show on-page SEO, technical checks, content signals and AI Search Readiness.</p>
+
+      <div class="checker-panel">
+        <form class="scan-form" id="scanForm">
+          <div class="field"><input id="url" type="url" placeholder="https://yourwebsite.com" required></div>
+          <div class="field"><input id="keyword" type="text" placeholder="Target keyword (e.g. dentist london)"></div>
+          <button class="btn btn-primary" id="scanBtn" type="submit">Check My Website →</button>
+        </form>
+        <div class="scan-note">Free analysis. Full export: 800 THB after secure checkout.</div>
+        <div id="scanNotice" class="notice"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container results" id="results">
+    <div class="report-top">
+      <div class="site-card">
+        <div class="muted" style="font-size:12px;text-transform:uppercase;font-weight:900;letter-spacing:.08em">Analysed page</div>
+        <h3 id="siteTitle">Your Website</h3><div class="site-url" id="siteUrl">https://example.co.uk</div><div class="keyword-chip" id="keywordChip">Target keyword: not set</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-wrap">
+          <div class="score-ring" id="scoreRing"><strong id="score">78</strong><small>/100</small></div>
+          <div class="status-list">
+            <div class="status-line"><span>Critical Errors</span><b id="criticalCount" style="color:#e94343">3</b></div>
+            <div class="status-line"><span>Warnings</span><b id="warningCount" style="color:#c67a00">8</b></div>
+            <div class="status-line"><span>Passed Checks</span><b id="passedCount" style="color:#0a9f5d">24</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs" role="tablist"><button class="tab active" data-filter="all">All Issues</button><button class="tab" data-filter="critical">Critical Errors</button><button class="tab" data-filter="warning">Warnings</button><button class="tab" data-filter="passed">Passed Checks</button></div>
+
+    <div class="issue-group" data-group="critical"><h3>🔴 Critical Errors <span class="pill pill-high">Fix first</span></h3><div id="criticalIssues"></div></div>
+    <div class="issue-group" data-group="warning"><h3>🟠 Warnings <span class="pill pill-medium">Fix next</span></h3><div id="warningIssues"></div></div>
+    <div class="issue-group" data-group="passed"><h3>🟢 Passed Checks</h3><div id="passedIssues"></div></div>
+
+    <div class="export-box">
+      <div><h3>Export Full SEO Report</h3><div class="muted">Download the detailed report with priority actions and implementation notes.</div><div class="price">800 THB <small>one-time report export</small></div><div class="lock">🔒 Secure payment via Omise / Opn Payments</div></div>
+      <button class="btn btn-green" id="exportBtn">Pay 800 THB & Export →</button>
+    </div>
+  </section>
+</main>
+
+<div class="modal-backdrop" id="fixModal"><div class="modal"><button class="close" data-close>×</button><h3>Want RankPath to fix this issue?</h3><p class="muted">Send the issue with your website details and we can review the next step.</p><div class="modal-grid"><input id="leadName" placeholder="Name"><input id="leadEmail" type="email" placeholder="Email"><input id="leadPhone" placeholder="Phone (optional)"><input id="selectedIssue" readonly></div><div class="modal-actions"><button class="btn btn-outline" data-close>Cancel</button><button class="btn btn-green" id="leadBtn">Request SEO Fix →</button></div><div id="leadNotice" class="notice"></div></div></div>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
