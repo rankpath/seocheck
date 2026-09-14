@@ -81,8 +81,9 @@
     }
     clearNotice($('#scanNotice'));
     const r=await fetch(cfg.API_BASE.replace(/\/$/,'')+'/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url,keyword})});
-    if(!r.ok) throw new Error('Scan failed. Please check the URL and try again.');
-    render(await r.json(),url,keyword);
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok) throw new Error(data.error||'Scan failed. Please check the URL and try again.');
+    render(data,url,keyword);
   }
   scanForm.addEventListener('submit',async e=>{
     e.preventDefault(); const btn=$('#scanBtn'); const url=$('#url').value.trim(); const keyword=$('#keyword').value.trim(); if(!url)return;

@@ -41,6 +41,19 @@ The front end expects:
 - `POST /api/lead` — Fix This Issue lead form
 - `POST /api/create-checkout` — returns `{ "checkout_url": "https://..." }`
 
+## DataForSEO backend included
+
+This repository now includes a Vercel Function at `api/analyze.js`. It calls
+DataForSEO On-Page Instant Pages and converts the provider response into the
+Critical / Warning / Passed format used by the checker.
+
+1. Import this repository into Vercel.
+2. Add `DATAFORSEO_LOGIN` and `DATAFORSEO_PASSWORD` in Vercel Environment Variables.
+3. Add `ALLOWED_ORIGINS=https://rankpath.github.io` (plus any additional trusted origins).
+4. Deploy, then paste the production Vercel origin into `API_BASE` in `config.js`.
+
+Never add the DataForSEO credentials to `config.js` or commit a populated `.env` file.
+
 With no `API_BASE`, the SEO Checker opens in preview/demo mode so the UX can still be reviewed on GitHub Pages.
 
 ## Omise / Opn payment — 800 THB export
