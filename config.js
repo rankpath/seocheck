@@ -1,12 +1,5 @@
 window.RANKPATH_CONFIG = {
-  // Set this to your deployed FastAPI / Node backend, e.g. https://api.rank-path.com
-  // Paste the production Vercel origin after deploying the API.
-  // Example: https://rankpath-seo-api.vercel.app
-  API_BASE: "",
-
-  // Optional: if you already created a fixed Omise Payment Links+ checkout URL,
-  // paste it here. When set, the 800 THB export button redirects directly to it.
+  API_BASE: "https://rankpath-seocheck-vickyvickylov-7676.vercel.app",
   OMISE_PAYMENT_LINK: "",
-
   REPORT_PRICE_THB: 800
 };
