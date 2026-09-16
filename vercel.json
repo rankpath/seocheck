@@ -3,6 +3,9 @@
   "functions": {
     "api/analyze.js": {
       "maxDuration": 60
+    },
+    "api/maps-rank.js": {
+      "maxDuration": 60
     }
   }
 }
