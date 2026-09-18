@@ -132,9 +132,9 @@ input[type=search],select{width:100%;border-radius:12px;background:#fff}
     </div>
     <input class="finder-search" id="workspaceSearch" type="search" placeholder="Try: ScoutIQ, chatgpt.site, SEO Audit, GitHub…">
     <div class="project-link-setup">
-      <input class="project-link-input" id="scoutiqProjectUrl" type="url" placeholder="Paste ScoutIQ Compare ChatGPT Project link once…">
-      <button class="project-link-save" id="saveScoutiqProjectUrl" type="button">Save Folder Link</button>
-      <div class="project-link-status" id="scoutiqProjectStatus"></div>
+      <input class="project-link-input" id="scoutiqOriginalChatUrl" type="url" placeholder="Paste original ScoutIQ Compare Chat URL once…">
+      <button class="project-link-save" id="saveScoutiqOriginalChatUrl" type="button">Save Original Chat</button>
+      <div class="project-link-status" id="scoutiqOriginalChatStatus"></div>
     </div>
     <div class="finder-results" id="workspaceResults"></div>
   </div>
@@ -177,7 +177,7 @@ input[type=search],select{width:100%;border-radius:12px;background:#fff}
   </div>
   <div id="activeFilter">Showing all tasks</div>
   <div id="board"></div>
-  <div class="footer">Updated 18 Sep 2026. Filter buttons and summary cards are interactive. Completion ticks are stored locally in this browser.</div>
+  <div class="footer">Updated 18 Sep 2026. Filter buttons and summary cards are interactive. ScoutIQ Compare can save its original ChatGPT conversation link locally in this browser.</div>
 </div>
 
 <script>
@@ -215,23 +215,23 @@ const WORKSPACES=[
   {name:"Kinn Retreat",project:"Client Work",type:"Website",url:"https://rankpath.github.io/kinn-retreat-website/",actions:[["Open Website","https://rankpath.github.io/kinn-retreat-website/"]]}
 ];
 
-const SCOUTIQ_PROJECT_LINK_KEY='scoutiq-compare-chatgpt-project-link-v1';
-function getScoutiqProjectLink(){return localStorage.getItem(SCOUTIQ_PROJECT_LINK_KEY)||'';}
-function isValidChatGPTProjectLink(value){
+const SCOUTIQ_ORIGINAL_CHAT_LINK_KEY='scoutiq-compare-original-chat-link-v1';
+function getScoutiqOriginalChatLink(){return localStorage.getItem(SCOUTIQ_PROJECT_LINK_KEY)||'';}
+function isValidChatGPTChatLink(value){
   try{
     const u=new URL(value);
     return u.protocol==='https:' && u.hostname==='chatgpt.com' && u.pathname && u.pathname!=='/';
   }catch(e){return false;}
 }
-function scoutiqFolderActionHTML(){
-  const url=getScoutiqProjectLink();
+function scoutiqOriginalChatActionHTML(){
+  const url=getScoutiqOriginalChatLink();
   if(url) return '<a class="finder-btn" href="'+url+'" target="_blank" rel="noopener">↗ Open ChatGPT Folder</a>';
-  return '<button class="finder-btn" type="button" data-focus-project-link>＋ Set ChatGPT Folder</button>';
+  return '<button class="finder-btn" type="button" data-focus-original-chat>＋ Set ChatGPT Folder</button>';
 }
-function updateScoutiqProjectLinkUI(){
-  const input=document.getElementById('scoutiqProjectUrl');
-  const status=document.getElementById('scoutiqProjectStatus');
-  const saved=getScoutiqProjectLink();
+function updateScoutiqOriginalChatLinkUI(){
+  const input=document.getElementById('scoutiqOriginalChatUrl');
+  const status=document.getElementById('scoutiqOriginalChatStatus');
+  const saved=getScoutiqOriginalChatLink();
   if(saved && !input.value) input.value=saved;
   status.textContent=saved?'Saved — Open ChatGPT Folder will now use this Project link.':'Paste the exact ChatGPT Project link, then save it once.';
 }
@@ -243,12 +243,19 @@ function renderWorkspaceFinder(value=""){
   if(!rows.length){el.innerHTML='<div class="finder-empty">No saved workspace or file link matches this search.</div>';return;}
   el.innerHTML=rows.map(w=>{
     const standard=w.actions.map(a=>'<a class="finder-btn" href="'+a[1]+'" target="_blank" rel="noopener">↗ '+a[0]+'</a>').join('');
-    const folder=w.name==='ScoutIQ Compare'?scoutiqFolderActionHTML():'';
+    const folder=w.name==='ScoutIQ Compare'?scoutiqOriginalChatActionHTML():'';
     return '<div class="finder-item"><div><strong>'+w.name+'</strong><div class="finder-meta">'+w.project+' · '+w.type+'<br>'+w.url+'</div></div><div class="finder-actions">'+standard+folder+'</div></div>';
   }).join('');
-  document.querySelectorAll('[data-focus-project-link]').forEach(btn=>btn.addEventListener('click',()=>{
-    const input=document.getElementById('scoutiqProjectUrl');
+  document.querySelectorAll('[data-focus-original-chat]').forEach(btn=>btn.addEventListener('click',()=>{
+    const input=document.getElementById('scoutiqOriginalChatUrl');
     input.focus(); input.scrollIntoView({behavior:'smooth',block:'center'});
+  }));
+  document.querySelectorAll('[data-copy-original-search]').forEach(btn=>btn.addEventListener('click',async()=>{
+    try{
+      await navigator.clipboard.writeText(SCOUTIQ_ORIGINAL_SEARCH);
+      btn.textContent='Copied ✓';
+      setTimeout(()=>btn.textContent='Copy Search Phrase',1400);
+    }catch(e){}
   }));
 }
 
@@ -296,10 +303,10 @@ function linksHTML(t){
   const base=(t.links||[]).map(l=>'<a class="work-link" href="'+l[1]+'" target="_blank" rel="noopener">↗ '+l[0]+'</a>').join('');
   let extra='';
   if(t.task==='ScoutIQ Compare'){
-    const url=getScoutiqProjectLink();
+    const url=getScoutiqOriginalChatLink();
     extra=url
-      ? '<a class="work-link" href="'+url+'" target="_blank" rel="noopener">↗ Open ChatGPT Folder</a>'
-      : '<button class="work-link" type="button" data-focus-project-link>＋ Set ChatGPT Folder</button>';
+      ? '<a class="work-link" href="'+url+'" target="_blank" rel="noopener">↗ Open Original ChatGPT Work</a>'
+      : '<a class="work-link" href="https://chatgpt.com/" target="_blank" rel="noopener">⌕ Find Original Chat</a><button class="work-link" type="button" data-copy-original-search>Copy Search Phrase</button><button class="work-link" type="button" data-focus-original-chat>＋ Save Chat Link</button>';
   }
   return (base||extra)?'<div class="links">'+base+extra+'</div>':'';
 }
@@ -337,9 +344,16 @@ function render(){
     const hrs=Math.round(list.filter(t=>statusOf(t)!=='Done').reduce((s,t)=>s+midpoint(t.effort),0));
     return '<section class="section"><div class="section-head"><div class="section-title '+p.toLowerCase()+'">'+p+' priority <small>'+list.length+'</small></div><div class="hours">'+hrs+' hrs</div></div>'+list.map(cardHTML).join('')+'</section>';
   }).join('');
-  document.querySelectorAll('[data-focus-project-link]').forEach(btn=>btn.addEventListener('click',()=>{
-    const input=document.getElementById('scoutiqProjectUrl');
+  document.querySelectorAll('[data-focus-original-chat]').forEach(btn=>btn.addEventListener('click',()=>{
+    const input=document.getElementById('scoutiqOriginalChatUrl');
     input.focus(); input.scrollIntoView({behavior:'smooth',block:'center'});
+  }));
+  document.querySelectorAll('[data-copy-original-search]').forEach(btn=>btn.addEventListener('click',async()=>{
+    try{
+      await navigator.clipboard.writeText(SCOUTIQ_ORIGINAL_SEARCH);
+      btn.textContent='Copied ✓';
+      setTimeout(()=>btn.textContent='Copy Search Phrase',1400);
+    }catch(e){}
   }));
   document.querySelectorAll('.check').forEach(cb=>cb.addEventListener('change',e=>{
     const id=e.target.dataset.id;
@@ -379,11 +393,11 @@ const sel=document.getElementById('typeFilter');
 sel.addEventListener('change',e=>{selectedType=e.target.value;render();});
 
 document.getElementById('workspaceSearch').addEventListener('input',e=>renderWorkspaceFinder(e.target.value));
-document.getElementById('saveScoutiqProjectUrl').addEventListener('click',()=>{
-  const input=document.getElementById('scoutiqProjectUrl');
-  const status=document.getElementById('scoutiqProjectStatus');
+document.getElementById('saveScoutiqOriginalChatUrl').addEventListener('click',()=>{
+  const input=document.getElementById('scoutiqOriginalChatUrl');
+  const status=document.getElementById('scoutiqOriginalChatStatus');
   const value=input.value.trim();
-  if(!isValidChatGPTProjectLink(value)){
+  if(!isValidChatGPTChatLink(value)){
     status.textContent='Please paste a ChatGPT Project link (https://chatgpt.com/… not the homepage).';
     input.focus();
     return;
@@ -393,7 +407,7 @@ document.getElementById('saveScoutiqProjectUrl').addEventListener('click',()=>{
   renderWorkspaceFinder(document.getElementById('workspaceSearch').value);
   render();
 });
-updateScoutiqProjectLinkUI();
+updateScoutiqOriginalChatLinkUI();
 renderWorkspaceFinder();
 syncChips();syncMetrics('all');render();
 </script>
