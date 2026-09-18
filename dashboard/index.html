@@ -40,6 +40,10 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:48px;line-height:1;marg
 .finder-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
 .finder-btn{display:inline-flex;align-items:center;text-decoration:none;border:1px solid #cfd4d1;background:#fafbfa;color:#29322f;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:600}
 .finder-empty{font-size:13px;color:var(--muted);padding:8px 2px}
+.project-link-setup{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;margin-top:10px}
+.project-link-input{width:100%;border:1px solid #cfd4d1;background:#fff;color:var(--ink);border-radius:10px;padding:10px 12px;font-size:13px}
+.project-link-save{cursor:pointer;border:1px solid #171a19;background:#171a19;color:#fff;border-radius:10px;padding:10px 12px;font-size:12px;font-weight:700}
+.project-link-status{grid-column:1/-1;font-size:11px;color:var(--muted);min-height:16px}
 .summary{margin-top:30px}
 .row{display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:16px;align-items:end}
 .row strong{color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:500}
@@ -99,7 +103,7 @@ input[type=search],select{width:100%;border-radius:12px;background:#fff}
   .shell{padding:24px 16px 60px}h1{font-size:40px}.sub{font-size:16px}
   .metrics{grid-template-columns:1fr 1fr}.searchline{grid-template-columns:1fr}
   .card{grid-template-columns:30px 1fr;padding:16px 14px}.right{grid-column:2;text-align:left}
-  .row{font-size:14px}.quick-link{font-size:12px}.finder-item{grid-template-columns:1fr}.finder-actions{justify-content:flex-start}
+  .row{font-size:14px}.quick-link{font-size:12px}.finder-item{grid-template-columns:1fr}.finder-actions{justify-content:flex-start}.project-link-setup{grid-template-columns:1fr}.project-link-status{grid-column:1}
 }
 </style>
 </head>
@@ -127,6 +131,11 @@ input[type=search],select{width:100%;border-radius:12px;background:#fff}
       <div class="finder-note">Search project, file, URL or ChatGPT work</div>
     </div>
     <input class="finder-search" id="workspaceSearch" type="search" placeholder="Try: ScoutIQ, chatgpt.site, SEO Audit, GitHub…">
+    <div class="project-link-setup">
+      <input class="project-link-input" id="scoutiqProjectUrl" type="url" placeholder="Paste ScoutIQ Compare ChatGPT Project link once…">
+      <button class="project-link-save" id="saveScoutiqProjectUrl" type="button">Save Folder Link</button>
+      <div class="project-link-status" id="scoutiqProjectStatus"></div>
+    </div>
     <div class="finder-results" id="workspaceResults"></div>
   </div>
 
@@ -178,7 +187,7 @@ const T=[
 ["SEO Audit Backend v1","RankPath","Backend / API","GitHub: rankpath/seocheck","Sep 2026","18 Sep 2026","18 Sep 2026","QA","High","9–13","Verify production responses, errors and secrets", [["Open GitHub","https://github.com/rankpath/seocheck"]]],
 ["DataForSEO Integration","RankPath","API Integration","rankpath/seocheck","Sep 2026","18 Sep 2026","18 Sep 2026","QA","High","3–5","Run end-to-end production test", [["Open GitHub","https://github.com/rankpath/seocheck"]]],
 ["ScoutIQ Web App","ScoutIQ","Web App","ScoutIQ project / Vercel preview","Apr 2026","17 Sep 2026","—","Active","High","20–30","Lock MVP + production data model", [["Open App","https://scout-iq-eta.vercel.app"]]],
-["ScoutIQ Compare","ScoutIQ","ChatGPT Site / Web App","https://scoutiq-compare.vincentforrester.chatgpt.site/","18 Sep 2026","18 Sep 2026","18 Sep 2026","Live","High","3–5","Continue development and connect this ChatGPT-built app to the ScoutIQ workflow", [["Open Project","https://scoutiq-compare.vincentforrester.chatgpt.site/"],["Open ChatGPT","https://chatgpt.com/"]]],
+["ScoutIQ Compare","ScoutIQ","ChatGPT Site / Web App","https://scoutiq-compare.vincentforrester.chatgpt.site/","18 Sep 2026","18 Sep 2026","18 Sep 2026","Live","High","3–5","Continue development and connect this ChatGPT-built app to the ScoutIQ workflow", [["Open Project","https://scoutiq-compare.vincentforrester.chatgpt.site/"]]],
 ["The Art Hospital Google Ads","The Art Hospital","Client Work","Google Ads / reports","Jun 2026","16 Sep 2026","—","Live","High","30–50+","Continue CPA / ROAS optimization", []],
 ["Master Task Tracker","Automation","Productivity / Automation","ChatGPT / Studio Board","Sep 2026","18 Sep 2026","18 Sep 2026","Live","High","5–7","Keep tracker and dashboard synchronized", []],
 ["Studio Board Dashboard","Automation","Dashboard","rankpath/seocheck/dashboard/index.html","16 Sep 2026","18 Sep 2026","18 Sep 2026","Live","High","4–5","Keep verified work links and filters current", [["Open Source","https://github.com/rankpath/seocheck/blob/main/dashboard/index.html"]]],
@@ -195,7 +204,7 @@ const T=[
 ].map(x=>({task:x[0],project:x[1],type:x[2],file:x[3],created:x[4],modified:x[5],last:x[6],status:x[7],priority:x[8],effort:x[9],next:x[10],links:x[11]}));
 
 const WORKSPACES=[
-  {name:"ScoutIQ Compare",project:"ScoutIQ",type:"ChatGPT Site / Web App",url:"https://scoutiq-compare.vincentforrester.chatgpt.site/",actions:[["Open Project","https://scoutiq-compare.vincentforrester.chatgpt.site/"],["Open ChatGPT","https://chatgpt.com/"]]},
+  {name:"ScoutIQ Compare",project:"ScoutIQ",type:"ChatGPT Site / Web App",url:"https://scoutiq-compare.vincentforrester.chatgpt.site/",actions:[["Open Project","https://scoutiq-compare.vincentforrester.chatgpt.site/"]]},
   {name:"ScoutIQ",project:"ScoutIQ",type:"Web App",url:"https://scout-iq-eta.vercel.app",actions:[["Open App","https://scout-iq-eta.vercel.app"],["Open ChatGPT","https://chatgpt.com/"]]},
   {name:"RankPath SEO Audit Tool",project:"RankPath",type:"Web App",url:"https://rankpath.github.io/seocheck/",actions:[["Open Tool","https://rankpath.github.io/seocheck/"],["Open GitHub","https://github.com/rankpath/seocheck"],["Open ChatGPT","https://chatgpt.com/"]]},
   {name:"Studio Board Dashboard",project:"Automation",type:"Dashboard",url:"https://rankpath.github.io/seocheck/dashboard/",actions:[["Open Dashboard","https://rankpath.github.io/seocheck/dashboard/"],["Open Source","https://github.com/rankpath/seocheck/blob/main/dashboard/index.html"]]},
@@ -206,12 +215,41 @@ const WORKSPACES=[
   {name:"Kinn Retreat",project:"Client Work",type:"Website",url:"https://rankpath.github.io/kinn-retreat-website/",actions:[["Open Website","https://rankpath.github.io/kinn-retreat-website/"]]}
 ];
 
+const SCOUTIQ_PROJECT_LINK_KEY='scoutiq-compare-chatgpt-project-link-v1';
+function getScoutiqProjectLink(){return localStorage.getItem(SCOUTIQ_PROJECT_LINK_KEY)||'';}
+function isValidChatGPTProjectLink(value){
+  try{
+    const u=new URL(value);
+    return u.protocol==='https:' && u.hostname==='chatgpt.com' && u.pathname && u.pathname!=='/';
+  }catch(e){return false;}
+}
+function scoutiqFolderActionHTML(){
+  const url=getScoutiqProjectLink();
+  if(url) return '<a class="finder-btn" href="'+url+'" target="_blank" rel="noopener">↗ Open ChatGPT Folder</a>';
+  return '<button class="finder-btn" type="button" data-focus-project-link>＋ Set ChatGPT Folder</button>';
+}
+function updateScoutiqProjectLinkUI(){
+  const input=document.getElementById('scoutiqProjectUrl');
+  const status=document.getElementById('scoutiqProjectStatus');
+  const saved=getScoutiqProjectLink();
+  if(saved && !input.value) input.value=saved;
+  status.textContent=saved?'Saved — Open ChatGPT Folder will now use this Project link.':'Paste the exact ChatGPT Project link, then save it once.';
+}
+
 function renderWorkspaceFinder(value=""){
   const q=value.trim().toLowerCase();
   const rows=WORKSPACES.filter(w=>!q||[w.name,w.project,w.type,w.url].join(" ").toLowerCase().includes(q));
   const el=document.getElementById("workspaceResults");
   if(!rows.length){el.innerHTML='<div class="finder-empty">No saved workspace or file link matches this search.</div>';return;}
-  el.innerHTML=rows.map(w=>'<div class="finder-item"><div><strong>'+w.name+'</strong><div class="finder-meta">'+w.project+' · '+w.type+'<br>'+w.url+'</div></div><div class="finder-actions">'+w.actions.map(a=>'<a class="finder-btn" href="'+a[1]+'" target="_blank" rel="noopener">↗ '+a[0]+'</a>').join('')+'</div></div>').join('');
+  el.innerHTML=rows.map(w=>{
+    const standard=w.actions.map(a=>'<a class="finder-btn" href="'+a[1]+'" target="_blank" rel="noopener">↗ '+a[0]+'</a>').join('');
+    const folder=w.name==='ScoutIQ Compare'?scoutiqFolderActionHTML():'';
+    return '<div class="finder-item"><div><strong>'+w.name+'</strong><div class="finder-meta">'+w.project+' · '+w.type+'<br>'+w.url+'</div></div><div class="finder-actions">'+standard+folder+'</div></div>';
+  }).join('');
+  document.querySelectorAll('[data-focus-project-link]').forEach(btn=>btn.addEventListener('click',()=>{
+    const input=document.getElementById('scoutiqProjectUrl');
+    input.focus(); input.scrollIntoView({behavior:'smooth',block:'center'});
+  }));
 }
 
 const KEY='vicky-studio-board-live-v2';
@@ -255,9 +293,15 @@ function filtered(){
   });
 }
 function linksHTML(t){
-  return (t.links||[]).length
-    ? '<div class="links">'+t.links.map(l=>'<a class="work-link" href="'+l[1]+'" target="_blank" rel="noopener">↗ '+l[0]+'</a>').join('')+'</div>'
-    : '';
+  const base=(t.links||[]).map(l=>'<a class="work-link" href="'+l[1]+'" target="_blank" rel="noopener">↗ '+l[0]+'</a>').join('');
+  let extra='';
+  if(t.task==='ScoutIQ Compare'){
+    const url=getScoutiqProjectLink();
+    extra=url
+      ? '<a class="work-link" href="'+url+'" target="_blank" rel="noopener">↗ Open ChatGPT Folder</a>'
+      : '<button class="work-link" type="button" data-focus-project-link>＋ Set ChatGPT Folder</button>';
+  }
+  return (base||extra)?'<div class="links">'+base+extra+'</div>':'';
 }
 function cardHTML(t){
   const id=idFor(t), s=statusOf(t), checked=s==='Done';
@@ -293,6 +337,10 @@ function render(){
     const hrs=Math.round(list.filter(t=>statusOf(t)!=='Done').reduce((s,t)=>s+midpoint(t.effort),0));
     return '<section class="section"><div class="section-head"><div class="section-title '+p.toLowerCase()+'">'+p+' priority <small>'+list.length+'</small></div><div class="hours">'+hrs+' hrs</div></div>'+list.map(cardHTML).join('')+'</section>';
   }).join('');
+  document.querySelectorAll('[data-focus-project-link]').forEach(btn=>btn.addEventListener('click',()=>{
+    const input=document.getElementById('scoutiqProjectUrl');
+    input.focus(); input.scrollIntoView({behavior:'smooth',block:'center'});
+  }));
   document.querySelectorAll('.check').forEach(cb=>cb.addEventListener('change',e=>{
     const id=e.target.dataset.id;
     if(e.target.checked)doneIds.add(id);else doneIds.delete(id);
@@ -331,6 +379,21 @@ const sel=document.getElementById('typeFilter');
 sel.addEventListener('change',e=>{selectedType=e.target.value;render();});
 
 document.getElementById('workspaceSearch').addEventListener('input',e=>renderWorkspaceFinder(e.target.value));
+document.getElementById('saveScoutiqProjectUrl').addEventListener('click',()=>{
+  const input=document.getElementById('scoutiqProjectUrl');
+  const status=document.getElementById('scoutiqProjectStatus');
+  const value=input.value.trim();
+  if(!isValidChatGPTProjectLink(value)){
+    status.textContent='Please paste a ChatGPT Project link (https://chatgpt.com/… not the homepage).';
+    input.focus();
+    return;
+  }
+  localStorage.setItem(SCOUTIQ_PROJECT_LINK_KEY,value);
+  status.textContent='Saved ✓ Open ChatGPT Folder will now go directly to this project.';
+  renderWorkspaceFinder(document.getElementById('workspaceSearch').value);
+  render();
+});
+updateScoutiqProjectLinkUI();
 renderWorkspaceFinder();
 syncChips();syncMetrics('all');render();
 </script>
