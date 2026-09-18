@@ -28,6 +28,18 @@ h1{font-family:Georgia,"Times New Roman",serif;font-size:48px;line-height:1;marg
   border-radius:999px;padding:9px 13px;font-size:13px;font-weight:600
 }
 .quick-link:hover,.work-link:hover{border-color:#88918d;background:#f9faf9}
+.finder{margin-top:22px;border:1px solid var(--line);background:rgba(255,255,255,.68);border-radius:16px;padding:16px}
+.finder-head{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:10px}
+.finder-title{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.finder-note{font-size:12px;color:#949c98}
+.finder-search{width:100%;border:1px solid #cfd4d1;background:#fff;color:var(--ink);border-radius:12px;padding:12px 14px;font-size:15px}
+.finder-results{display:grid;gap:8px;margin-top:10px}
+.finder-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 13px}
+.finder-item strong{display:block;font-size:14px;margin-bottom:3px}
+.finder-meta{font-size:12px;color:var(--muted);line-height:1.4;word-break:break-word}
+.finder-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.finder-btn{display:inline-flex;align-items:center;text-decoration:none;border:1px solid #cfd4d1;background:#fafbfa;color:#29322f;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:600}
+.finder-empty{font-size:13px;color:var(--muted);padding:8px 2px}
 .summary{margin-top:30px}
 .row{display:flex;justify-content:space-between;gap:20px;color:var(--muted);font-size:16px;align-items:end}
 .row strong{color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:500}
@@ -87,7 +99,7 @@ input[type=search],select{width:100%;border-radius:12px;background:#fff}
   .shell{padding:24px 16px 60px}h1{font-size:40px}.sub{font-size:16px}
   .metrics{grid-template-columns:1fr 1fr}.searchline{grid-template-columns:1fr}
   .card{grid-template-columns:30px 1fr;padding:16px 14px}.right{grid-column:2;text-align:left}
-  .row{font-size:14px}.quick-link{font-size:12px}
+  .row{font-size:14px}.quick-link{font-size:12px}.finder-item{grid-template-columns:1fr}.finder-actions{justify-content:flex-start}
 }
 </style>
 </head>
@@ -107,6 +119,15 @@ input[type=search],select{width:100%;border-radius:12px;background:#fff}
       <a class="quick-link" href="https://scout-iq-eta.vercel.app" target="_blank" rel="noopener">↗ ScoutIQ</a>
       <a class="quick-link" href="https://facebook.com/adcraftdigital101/" target="_blank" rel="noopener">↗ Adscraft Facebook</a>
     </div>
+  </div>
+
+  <div class="finder">
+    <div class="finder-head">
+      <div class="finder-title">Workspace / File Finder</div>
+      <div class="finder-note">Search project, file, URL or ChatGPT work</div>
+    </div>
+    <input class="finder-search" id="workspaceSearch" type="search" placeholder="Try: ScoutIQ, chatgpt.site, SEO Audit, GitHub…">
+    <div class="finder-results" id="workspaceResults"></div>
   </div>
 
   <div class="summary">
@@ -171,6 +192,26 @@ const T=[
 ["XSeed Property Website","Client Work","Website","rankpath.github.io/xseedproperty/","Sep 2026","16 Sep 2026","—","Stalled","Low","2–4","Continue or archive", [["Open Website","https://rankpath.github.io/xseedproperty/"]]],
 ["Kinn Retreat Website","Client Work","Website","rankpath.github.io/kinn-retreat-website/","Sep 2026","16 Sep 2026","—","Stalled","Low","2–4","Continue or archive", [["Open Website","https://rankpath.github.io/kinn-retreat-website/"]]]
 ].map(x=>({task:x[0],project:x[1],type:x[2],file:x[3],created:x[4],modified:x[5],last:x[6],status:x[7],priority:x[8],effort:x[9],next:x[10],links:x[11]}));
+
+const WORKSPACES=[
+  {name:"ScoutIQ Compare",project:"ScoutIQ",type:"ChatGPT Site / Web App",url:"https://scoutiq-compare.vincentforrester.chatgpt.site/",actions:[["Open Project","https://scoutiq-compare.vincentforrester.chatgpt.site/"],["Open ChatGPT","https://chatgpt.com/"]]},
+  {name:"ScoutIQ",project:"ScoutIQ",type:"Web App",url:"https://scout-iq-eta.vercel.app",actions:[["Open App","https://scout-iq-eta.vercel.app"],["Open ChatGPT","https://chatgpt.com/"]]},
+  {name:"RankPath SEO Audit Tool",project:"RankPath",type:"Web App",url:"https://rankpath.github.io/seocheck/",actions:[["Open Tool","https://rankpath.github.io/seocheck/"],["Open GitHub","https://github.com/rankpath/seocheck"],["Open ChatGPT","https://chatgpt.com/"]]},
+  {name:"Studio Board Dashboard",project:"Automation",type:"Dashboard",url:"https://rankpath.github.io/seocheck/dashboard/",actions:[["Open Dashboard","https://rankpath.github.io/seocheck/dashboard/"],["Open Source","https://github.com/rankpath/seocheck/blob/main/dashboard/index.html"]]},
+  {name:"Adscraft Digital",project:"Adscraft Digital",type:"Website",url:"https://adscraftdigital.com",actions:[["Open Website","https://adscraftdigital.com"],["Open ChatGPT","https://chatgpt.com/"]]},
+  {name:"RankPath",project:"RankPath",type:"Website",url:"https://rank-path.com",actions:[["Open Website","https://rank-path.com"],["Open ChatGPT","https://chatgpt.com/"]]},
+  {name:"Adscraft Facebook",project:"Adscraft Digital",type:"Social",url:"https://facebook.com/adcraftdigital101/",actions:[["Open Facebook","https://facebook.com/adcraftdigital101/"]]},
+  {name:"XSeed Property",project:"Client Work",type:"Website",url:"https://rankpath.github.io/xseedproperty/",actions:[["Open Website","https://rankpath.github.io/xseedproperty/"]]},
+  {name:"Kinn Retreat",project:"Client Work",type:"Website",url:"https://rankpath.github.io/kinn-retreat-website/",actions:[["Open Website","https://rankpath.github.io/kinn-retreat-website/"]]}
+];
+
+function renderWorkspaceFinder(value=""){
+  const q=value.trim().toLowerCase();
+  const rows=WORKSPACES.filter(w=>!q||[w.name,w.project,w.type,w.url].join(" ").toLowerCase().includes(q));
+  const el=document.getElementById("workspaceResults");
+  if(!rows.length){el.innerHTML='<div class="finder-empty">No saved workspace or file link matches this search.</div>';return;}
+  el.innerHTML=rows.map(w=>'<div class="finder-item"><div><strong>'+w.name+'</strong><div class="finder-meta">'+w.project+' · '+w.type+'<br>'+w.url+'</div></div><div class="finder-actions">'+w.actions.map(a=>'<a class="finder-btn" href="'+a[1]+'" target="_blank" rel="noopener">↗ '+a[0]+'</a>').join('')+'</div></div>').join('');
+}
 
 const KEY='vicky-studio-board-live-v2';
 let selectedStatus='Everything', selectedPriority='Everything', selectedType='', query='', attentionOnly=false;
@@ -288,6 +329,8 @@ const sel=document.getElementById('typeFilter');
 [...new Set(T.map(t=>t.type))].sort().forEach(type=>{const o=document.createElement('option');o.value=type;o.textContent=type;sel.appendChild(o);});
 sel.addEventListener('change',e=>{selectedType=e.target.value;render();});
 
+document.getElementById('workspaceSearch').addEventListener('input',e=>renderWorkspaceFinder(e.target.value));
+renderWorkspaceFinder();
 syncChips();syncMetrics('all');render();
 </script>
 </body>
